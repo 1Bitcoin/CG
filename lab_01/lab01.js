@@ -2,7 +2,6 @@ let     rwidth = 10,
         rheight = 10,
         container = document.getElementById('canvas');
 
-
 class Set {
     constructor(id) {
         this.set = [];
@@ -127,16 +126,23 @@ function draw() {
     rect(0, 0, scalex(rwidth), scaley(rheight));
     noFill();
     stroke(0 ,0 ,0);
-
+    //рисуем оси координат
     line(x(-rwidth/2), y(0), x(rwidth/2), y(0));
     line(x(0), y(rheight/2), x(0), y(-rheight/2));
 
     stroke(255, 0, 0); fill(255, 0, 0);
 
-    //рисуем точки
-    set1.set.forEach((e, i) => {ellipse(x(parseFloat(e[0])), y(parseFloat(e[1])), 3, 3); text(i+1, x(parseFloat(e[0]))+2, y(parseFloat(e[1]))-2);});
-    noFill();
+    //рисуем точки и их координаты
+    set1.set.forEach((e, i) => {ellipse(x(parseFloat(e[0])), y(parseFloat(e[1])), 3, 3); 
+        text(i+1, x(parseFloat(e[0]))+2, y(parseFloat(e[1]))-2);
+        text('[ ', x(parseFloat(e[0]))-45, y(parseFloat(e[1]))+15);
+        text(parseFloat(e[0]), x(parseFloat(e[0]))-40, y(parseFloat(e[1]))+15);
+        text('      ; ', x(parseFloat(e[0]))-42, y(parseFloat(e[1]))+15);
+        text(parseFloat(e[1]), x(parseFloat(e[0]))-10, y(parseFloat(e[1]))+15);
+        text(']', x(parseFloat(e[0]))+8, y(parseFloat(e[1]))+15);});
 
+    noFill();
+    //
     let most = (Math.abs(triangle.s1) >= Math.abs(triangle.s2)) ?
         ((Math.abs(triangle.s1) >= Math.abs(triangle.s3)) ? Math.abs(triangle.s1) : Math.abs(triangle.s3)) :
         ((Math.abs(triangle.s2) >= Math.abs(triangle.s3)) ? Math.abs(triangle.s2) : Math.abs(triangle.s3));
