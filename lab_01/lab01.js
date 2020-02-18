@@ -87,7 +87,7 @@ class Triangle {
         let na = a.split(' '),
             nb = b.split(' '),
             nc = c.split(' '),
-            s1 = (na[1] - nb[1]) / (na[0] - nb[0]), //принадлежность точек прямой
+            s1 = (na[1] - nb[1]) / (na[0] - nb[0]), //коэ-фы наклона сторон треугольника
             s2 = (nb[1] - nc[1]) / (nb[0] - nc[0]),
             s3 = (nc[1] - na[1]) / (nc[0] - na[0]);
 
@@ -134,7 +134,7 @@ function draw() {
 
     //рисуем точки и их координаты
     set1.set.forEach((e, i) => {ellipse(x(parseFloat(e[0])), y(parseFloat(e[1])), 3, 3); 
-        text(i+1, x(parseFloat(e[0]))+2, y(parseFloat(e[1]))-2);
+        text(i + 1, x(parseFloat(e[0]))+2, y(parseFloat(e[1]))-2);
         text('[ ', x(parseFloat(e[0]))-45, y(parseFloat(e[1]))+15);
         text(parseFloat(e[0]), x(parseFloat(e[0]))-40, y(parseFloat(e[1]))+15);
         text('      ; ', x(parseFloat(e[0]))-42, y(parseFloat(e[1]))+15);
@@ -142,32 +142,62 @@ function draw() {
         text(']', x(parseFloat(e[0]))+8, y(parseFloat(e[1]))+15);});
 
     noFill();
-    //
+    //наибольший коэ-ф наклон одной из сторон треугольника
     let most = (Math.abs(triangle.s1) >= Math.abs(triangle.s2)) ?
         ((Math.abs(triangle.s1) >= Math.abs(triangle.s3)) ? Math.abs(triangle.s1) : Math.abs(triangle.s3)) :
         ((Math.abs(triangle.s2) >= Math.abs(triangle.s3)) ? Math.abs(triangle.s2) : Math.abs(triangle.s3));
+    var tryCoordsellipse = [0, 0, 0];
+    let flag = 0;
     for (let i = 0; i < set1.set.length; i++) {
         for (let j = i + 1; j < set1.set.length; j++) {
             for (let k = j + 1; k < set1.set.length; k++) {
                 let tri = checkTriangle(set1.set[i], set1.set[j], set1.set[k]);
                 if (tri[0] || tri[1] || tri[2]) {
-                    if (Math.abs(triangle.s1) === most && tri[0] || Math.abs(triangle.s2) === most && tri[1] || Math.abs(triangle.s3) === most && tri[2]) {
-                        stroke(0, 100, 0);
-                    } else {
-                        stroke(0, 255, 0);
+                    if (!flag && isFinite(tri[4])){
+                        tryCoordsellipse = [x(tri[3][0]), y(tri[3][1]), tri[4], tri[0], tri[1], tri[2]];
+                        flag = 1;
                     }
-                    ellipse(x(tri[3][0]), y(tri[3][1]), scalex(tri[4]*2), scaley(tri[4]*2)) //искомая окружность
+                    if (Math.abs(triangle.s1) === most && tri[0] || Math.abs(triangle.s2) === most && tri[1] || Math.abs(triangle.s3) === most && tri[2]) {
+                        if (isFinite(tri[4]) && isFinite(tri[3][0]) && isFinite(tri[3][1])){
+                            tryCoordsellipse = [x(tri[3][0]), y(tri[3][1]), tri[4]];
+                        }
+                    } 
+                     //искомая окружность
+                    //text('[ ', x(tri[3][0]), y(tri[3][1]));
+                    //text(tri[3][0], x(tri[3][0]), y(tri[3][1]));
+                    //text('      ; ', x(tri[3][0]), y(tri[3][1]));
+                    //text(x(parseFloat(tri[3][0])), x(tri[3][0]), y(tri[3][1]));
+                    //text(']', x(tri[3][0]), y(tri[3][1]));
+
+
                 }
             }
         }
     }
+    console.log(tryCoordsellipse[0], tryCoordsellipse[1], tryCoordsellipse[2]);
+
+    if (tryCoordsellipse[2] != 0){
+        stroke(0, 255, 0);
+        ellipse(tryCoordsellipse[0], tryCoordsellipse[1], scalex(tryCoordsellipse[2]*2), scaley(tryCoordsellipse[2]*2))
+    }
+
+    if (tryCoordsellipse[3]){
+        line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), tryCoordsellipse[0], tryCoordsellipse[1]);
+
+    } else if (tryCoordsellipse[4]){
+        line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), tryCoordsellipse[0], tryCoordsellipse[1]);
+
+
+    } else if (tryCoordsellipse[5]){
+        line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), tryCoordsellipse[0], tryCoordsellipse[1]);
+    }
 
     stroke(0, 200, 200);
-    //triangle
+    //рисуем треугольник
     line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])));
     line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])));
     line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])));
-    
+    //вершины треугольни
     text("A", x(parseFloat(triangle.a[0]))+3, y(parseFloat(triangle.a[1]))+3);
     text("B", x(parseFloat(triangle.b[0]))+3, y(parseFloat(triangle.b[1]))+3);
     text("C", x(parseFloat(triangle.c[0]))+3, y(parseFloat(triangle.c[1]))+3);
