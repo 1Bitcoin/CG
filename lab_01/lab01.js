@@ -125,7 +125,7 @@ function draw() {
     fill(255, 255, 255);
     rect(0, 0, scalex(rwidth), scaley(rheight));
     noFill();
-    stroke(0 ,0 ,0);
+    stroke(0, 0, 0);
     //рисуем оси координат
     line(x(-rwidth/2), y(0), x(rwidth/2), y(0));
     line(x(0), y(rheight/2), x(0), y(-rheight/2));
@@ -154,43 +154,22 @@ function draw() {
                 let tri = checkTriangle(set1.set[i], set1.set[j], set1.set[k]);
                 if (tri[0] || tri[1] || tri[2]) {
                     if (!flag && isFinite(tri[4])){
-                        tryCoordsellipse = [x(tri[3][0]), y(tri[3][1]), tri[4], tri[0], tri[1], tri[2]];
+                        tryCoordsellipse = [tri[3][0], tri[3][1], tri[4], tri[0], tri[1], tri[2]];
                         flag = 1;
                     }
                     if (Math.abs(triangle.s1) === most && tri[0] || Math.abs(triangle.s2) === most && tri[1] || Math.abs(triangle.s3) === most && tri[2]) {
                         if (isFinite(tri[4]) && isFinite(tri[3][0]) && isFinite(tri[3][1])){
-                            tryCoordsellipse = [x(tri[3][0]), y(tri[3][1]), tri[4]];
+                            tryCoordsellipse = [tri[3][0], tri[3][1], tri[4]];
                         }
                     } 
-                     //искомая окружность
-                    //text('[ ', x(tri[3][0]), y(tri[3][1]));
-                    //text(tri[3][0], x(tri[3][0]), y(tri[3][1]));
-                    //text('      ; ', x(tri[3][0]), y(tri[3][1]));
-                    //text(x(parseFloat(tri[3][0])), x(tri[3][0]), y(tri[3][1]));
-                    //text(']', x(tri[3][0]), y(tri[3][1]));
-
-
                 }
             }
         }
     }
-    console.log(tryCoordsellipse[0], tryCoordsellipse[1], tryCoordsellipse[2]);
-
-    if (tryCoordsellipse[2] != 0){
-        stroke(0, 255, 0);
-        ellipse(tryCoordsellipse[0], tryCoordsellipse[1], scalex(tryCoordsellipse[2]*2), scaley(tryCoordsellipse[2]*2))
-    }
-
-    if (tryCoordsellipse[3]){
-        line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), tryCoordsellipse[0], tryCoordsellipse[1]);
-
-    } else if (tryCoordsellipse[4]){
-        line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), tryCoordsellipse[0], tryCoordsellipse[1]);
-
-
-    } else if (tryCoordsellipse[5]){
-        line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), tryCoordsellipse[0], tryCoordsellipse[1]);
-    }
+    console.log(x(tryCoordsellipse[0]), y(tryCoordsellipse[1]), tryCoordsellipse[2]);
+    console.log(triangle.s1);
+    console.log(triangle.s2);
+    console.log(triangle.s3);
 
     stroke(0, 200, 200);
     //рисуем треугольник
@@ -201,8 +180,33 @@ function draw() {
     text("A", x(parseFloat(triangle.a[0]))+3, y(parseFloat(triangle.a[1]))+3);
     text("B", x(parseFloat(triangle.b[0]))+3, y(parseFloat(triangle.b[1]))+3);
     text("C", x(parseFloat(triangle.c[0]))+3, y(parseFloat(triangle.c[1]))+3);
-}
 
+    if (tryCoordsellipse[2] != 0){
+        stroke(0, 255, 0);
+        ellipse(x(tryCoordsellipse[0]), y(tryCoordsellipse[1]), scalex(tryCoordsellipse[2]*2), scaley(tryCoordsellipse[2]*2))
+        text('[ ', x(tryCoordsellipse[0])-45, y(tryCoordsellipse[1])+15);
+        text(tryCoordsellipse[0], x(tryCoordsellipse[0])-40, y(tryCoordsellipse[1])+15);
+        text('      ; ', x(tryCoordsellipse[0])-42, y(tryCoordsellipse[1])+15);
+        text(tryCoordsellipse[1], x(tryCoordsellipse[0])-10, y(tryCoordsellipse[1])+15);
+        text(']', x(tryCoordsellipse[0])+8, y(tryCoordsellipse[1])+15);
+    }
+    
+    stroke(0, 100, 200);
+    if (tryCoordsellipse[3]){
+        line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
+        console.log("1");
+
+    } else if (tryCoordsellipse[4]){
+        line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
+        console.log("2");
+
+    } else if (tryCoordsellipse[5]){
+        console.log("3");
+        line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
+    } else {
+
+    }
+}
 
 function resize() {
     canvas.style.width = container.clientWidth + "px";
