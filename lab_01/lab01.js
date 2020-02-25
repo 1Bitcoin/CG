@@ -183,7 +183,7 @@ function draw() {
     text("C", x(parseFloat(triangle.c[0]))+3, y(parseFloat(triangle.c[1]))+3);
 
     console.log(tryCoordsellipse);
-
+    //вывод координат центра окружности
     if (tryCoordsellipse[2] != 0){
         stroke(0, 255, 0);
         ellipse(x(tryCoordsellipse[0]), y(tryCoordsellipse[1]), scalex(tryCoordsellipse[2]*2), scaley(tryCoordsellipse[2]*2))
@@ -193,26 +193,36 @@ function draw() {
         text(tryCoordsellipse[1], x(tryCoordsellipse[0])-10, y(tryCoordsellipse[1])+15);
         text(' ]', x(tryCoordsellipse[0])+8, y(tryCoordsellipse[1])+15);
     }
-    
+    //рисуем искомую прямую
     stroke(255, 0, 0);
     if (tryCoordsellipse[3]){
         line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
         line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
+        text("Min. angle: ", width * 9 / 10, height / 15);
+        text(calcAngle(triangle.a[0], triangle.a[1], triangle.b[0], triangle.b[1]), width -20, height / 15);
 
-        console.log("1");
 
     } else if (tryCoordsellipse[4]){
         line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
         line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
-
-        console.log("2");
+        text("Min. angle: ", width * 9 / 10, height / 15);
+        text(calcAngle(triangle.b[0], triangle.b[1], triangle.c[0], triangle.c[1]), width -20, height / 15);
 
     } else if (tryCoordsellipse[5]){
         line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
         line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
-
-        console.log("3");
+        text("Min. angle: ", width * 9 / 10, height / 15);
+        text(calcAngle(triangle.c[0], triangle.c[1], triangle.a[0], triangle.a[1]), width -20, height / 15);
     } 
+
+}
+
+function calcAngle(x1, y1, x2, y2){
+    A = y2 - y1
+    B = -(x2 - x1)
+    console.log("A = ", A, "B = ", B);
+
+    return Math.acos(abs(5 * A / (5 * sqrt(A * A + B * B)))) * 180 / Math.PI
 
 }
 
