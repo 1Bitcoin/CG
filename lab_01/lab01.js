@@ -198,23 +198,24 @@ function draw() {
     if (tryCoordsellipse[3]){
         line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
         line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
-        text("Min. angle: ", width * 9 / 10, height / 15);
+        text("Min. angle: ", width * 0.87, height / 15);
         text(calcAngle(triangle.a[0], triangle.a[1], triangle.b[0], triangle.b[1]), width -20, height / 15);
 
 
     } else if (tryCoordsellipse[4]){
         line(x(parseFloat(triangle.b[0])), y(parseFloat(triangle.b[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
         line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
-        text("Min. angle: ", width * 9 / 10, height / 15);
+        text("Min. angle: ", width * 0.87, height / 15);
         text(calcAngle(triangle.b[0], triangle.b[1], triangle.c[0], triangle.c[1]), width -20, height / 15);
 
     } else if (tryCoordsellipse[5]){
         line(x(parseFloat(triangle.c[0])), y(parseFloat(triangle.c[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
         line(x(parseFloat(triangle.a[0])), y(parseFloat(triangle.a[1])), x(tryCoordsellipse[0]), y(tryCoordsellipse[1]));
-        text("Min. angle: ", width * 9 / 10, height / 15);
+        text("Min. angle: ", width * 0.87, height / 15);
         text(calcAngle(triangle.c[0], triangle.c[1], triangle.a[0], triangle.a[1]), width -20, height / 15);
-    } 
-
+    } else{
+        alert("нет решения")
+    }
 }
 
 function calcAngle(x1, y1, x2, y2){
@@ -223,7 +224,35 @@ function calcAngle(x1, y1, x2, y2){
     console.log("A = ", A, "B = ", B);
 
     return Math.acos(abs(5 * A / (5 * sqrt(A * A + B * B)))) * 180 / Math.PI
+}
 
+function checkTriangle(a, b, c) {
+    let center = function (a, b, c, i) { //поиск центра окружности
+        return (a[0] * a[0] + a[1] * a[1]) * Math.pow(-1, i) * (c[i] - b[i]) +
+            (b[0] * b[0] + b[1] * b[1]) * Math.pow(-1, i) * (a[i] - c[i]) +
+            (c[0] * c[0] + c[1] * c[1]) * Math.pow(-1, i) * (b[i] - a[i]);
+    };
+
+    let d = 2 * (a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1])), 
+        o = [center(a, b, c, 1) / d, center(a, b, c, 0) / d],
+        //длины сторон для формулы Герона
+        A = Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2)),
+        B = Math.sqrt(Math.pow(b[0] - c[0], 2) + Math.pow(b[1] - c[1], 2)),
+        C = Math.sqrt(Math.pow(c[0] - a[0], 2) + Math.pow(c[1] - a[1], 2)),
+        t = (A + B + C) / 2,
+        c1 = (!isFinite((o[1] - triangle.b[1]) / (o[0] - triangle.b[0])) && !isFinite(triangle.s1)) ||
+            Math.abs((o[1] - triangle.b[1]) / (o[0] - triangle.b[0]) - triangle.s1) < 0.00001 ||
+            (o[0] === parseFloat(triangle.b[0]) && o[1] === parseFloat(triangle.b[1])),
+        c2 = (!isFinite((o[1] - triangle.c[1]) / (o[0] - triangle.c[0])) && !isFinite(triangle.s2)) ||
+            Math.abs((o[1] - triangle.c[1]) / (o[0] - triangle.c[0]) - triangle.s2) < 0.00001 ||
+            (o[0] === parseFloat(triangle.c[0]) && o[1] === parseFloat(triangle.c[1])),
+        c3 = (!isFinite((o[1] - triangle.a[1]) / (o[0] - triangle.a[0])) && !isFinite(triangle.s3)) ||
+            Math.abs((o[1] - triangle.a[1]) / (o[0] - triangle.a[0]) - triangle.s3) < 0.00001 ||
+            (o[0] === parseFloat(triangle.a[0]) && o[1] === parseFloat(triangle.a[1]));
+
+
+
+    return [c1, c2, c3, o, Math.abs(A * B * C / (4 * Math.sqrt(t * (t - A) * (t - B) * (t - C))))];
 }
 
 function resize() {
@@ -264,34 +293,6 @@ function reduceSize() {
     updateSize(triangle.a.join(" "));
     updateSize(triangle.b.join(" "));
     updateSize(triangle.c.join(" "));
-}
-
-function checkTriangle(a, b, c) {
-    let center = function (a, b, c, i) { //поиск центра окружности
-        return (a[0] * a[0] + a[1] * a[1]) * Math.pow(-1, i) * (c[i] - b[i]) +
-            (b[0] * b[0] + b[1] * b[1]) * Math.pow(-1, i) * (a[i] - c[i]) +
-            (c[0] * c[0] + c[1] * c[1]) * Math.pow(-1, i) * (b[i] - a[i]);
-    };
-
-    let d = 2 * (a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1])), 
-        o = [center(a, b, c, 1) / d, center(a, b, c, 0) / d],
-        A = Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2)),
-        B = Math.sqrt(Math.pow(b[0] - c[0], 2) + Math.pow(b[1] - c[1], 2)),
-        C = Math.sqrt(Math.pow(c[0] - a[0], 2) + Math.pow(c[1] - a[1], 2)),
-        t = (A + B + C) / 2,
-        c1 = (!isFinite((o[1] - triangle.b[1]) / (o[0] - triangle.b[0])) && !isFinite(triangle.s1)) ||
-            Math.abs((o[1] - triangle.b[1]) / (o[0] - triangle.b[0]) - triangle.s1) < 0.00001 ||
-            (o[0] === parseFloat(triangle.b[0]) && o[1] === parseFloat(triangle.b[1])),
-        c2 = (!isFinite((o[1] - triangle.c[1]) / (o[0] - triangle.c[0])) && !isFinite(triangle.s2)) ||
-            Math.abs((o[1] - triangle.c[1]) / (o[0] - triangle.c[0]) - triangle.s2) < 0.00001 ||
-            (o[0] === parseFloat(triangle.c[0]) && o[1] === parseFloat(triangle.c[1])),
-        c3 = (!isFinite((o[1] - triangle.a[1]) / (o[0] - triangle.a[0])) && !isFinite(triangle.s3)) ||
-            Math.abs((o[1] - triangle.a[1]) / (o[0] - triangle.a[0]) - triangle.s3) < 0.00001 ||
-            (o[0] === parseFloat(triangle.a[0]) && o[1] === parseFloat(triangle.a[1]));
-
-
-
-    return [c1, c2, c3, o, Math.abs(A * B * C / (4 * Math.sqrt(t * (t - A) * (t - B) * (t - C))))];
 }
 
 function checkInput(reg, str) {
