@@ -18,11 +18,11 @@
                 <div class="input-group-prepend">
                     <label for="xy1" class="input-group-text">Start point</label>
                 </div>
-                <input type="text" class="form-control" placeholder="(x1 y1)" id="xy1" value="0 0">
+                <input type="text" class="form-control" placeholder="(x1 y1)" id="xy1" value="10 40">
                 <div class="input-group-prepend">
                     <label for="xy2" class="input-group-text">End point</label>
                 </div>
-                <input type="text" class="form-control" placeholder="(x2 y2)" id="xy2" value="200 100">
+                <input type="text" class="form-control" placeholder="(x2 y2)" id="xy2" value="50 100">
                 <div class="input-group-append">
                     <button class="btn btn-outline-primary" type="button" onclick="drawLine(document.getElementById('xy1').value, document.getElementById('xy2').value)">Draw</button>
                 </div>
@@ -106,16 +106,27 @@
             <div class="col mt-3">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Choose color</span>
+                        <span class="input-group-text">Choose color line</span>
                     </div>
                     <input type="color" class="form-control" value="#FFFFFF" id="color">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-dark" type="button" onclick="document.getElementById('color').value='#000000';">Canvas color</button>
+                        <button class="btn btn-outline-dark" type="button" onclick="document.getElementById('color').value= document.getElementById('name1').value;">Canvas color</button>
                     </div>
                     <div class="input-group-append">
                         <button class="btn btn-outline-dark" type="button" onclick="document.getElementById('color').value='#FFFFFF';">Default color</button>
                     </div>
                 </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Choose color canv</span>
+                    </div>
+                    <input type="color" class="form-control" value="#000000" id ="name1">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-dark" type="button" onclick="setColorcanvas(document.getElementById('len').value, document.getElementById('dfi').value, document.getElementById('xy1').value, document.getElementById('xy2').value);">Canvas color</button>
+                    </div>
+                </div>         
+
                 <button class="btn btn-warning w-100" onclick="draw()">Clear canvas</button>
             </div>
         </div>

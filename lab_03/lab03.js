@@ -1,7 +1,8 @@
 const   container = document.getElementById('canvas');
 
 let     clr = "#FFFFFF";
-
+var 	m = [];
+let 	i = 0;
 
 function lineLib(x1, y1, x2, y2) {
     line(scalex(x1), scaley(y1), scalex(x2), scaley(y2));
@@ -10,15 +11,17 @@ function lineLib(x1, y1, x2, y2) {
 function lineDDA(x1, y1, x2, y2) {
     let dx = x2 - x1,
         dy = y2 - y1,
-        l = (Math.abs(dx) > Math.abs(dy)) ? Math.abs(dx) : Math.abs(dy),
-        sx = dx / l,
-        sy = dy / l,
-        x = x1,
+        l = (Math.abs(dx) > Math.abs(dy)) ? Math.abs(dx) : Math.abs(dy);
+
+    dx = dx / l;
+    dy = dy / l;
+
+    let x = x1,
         y = y1;
 
-    for (let i = 1; i < l+1; i++) {
+    for (let i = 1; i < l + 1; i++) {
         point(scalex(x), scaley(y));
-        x = x+sx; y = y+sy;
+        x = x + dx; y = y + dy;
     }
 }
 
@@ -36,7 +39,7 @@ function lineBrF(x1, y1, x2, y2) {
     if (ch) {let t = dx; dx = dy; dy = t;}
 
     let m = dy / dx,
-        e = m - 1 / 2,
+        e = m - (1 / 2),
         x = x1,
         y = y1;
 
@@ -178,15 +181,16 @@ function drawLine(coord1, coord2) {
     if (!checkInput(/-?\d{1,10}\.?\d{0,12} -?\d{1,10}\.?\d{0,12}/, coord1) || !checkInput(/-?\d{1,10}\.?\d{0,12} -?\d{1,10}\.?\d{0,12}/, coord2)) {return;}
 
     let method = '1';
+    console.log(typeof(method));
     document.getElementsByName('mtd').forEach(e => {if (e.checked) method = e.value});
     clr = document.getElementById('color').value;
     clr = clr.substring(1).split('').reduce((res, e, i) => {if (i % 2 === 0) {res.push(e)} else {res[res.length-1]+=e} return res;}, []).map(e => parseInt(e, 16));
-
     stroke(...clr);
-
     if (coord1.split(' ')[0] === coord2.split(' ')[0] && coord1.split(' ')[1] === coord2.split(' ')[1])
     {point(...(coord1.split(' ').map((e, i) => i ? scaley(parseFloat(e)) : scalex(parseFloat(e))))); return;}
-
+	m[i] = coord1.split(' ')[0], m[i + 1] = coord1.split(' ')[1], m[i + 2] = coord2.split(' ')[0], m[i + 3] = coord2.split(' ')[1], m[i + 4] = method, m[i + 5] = clr;
+	console.log(m);
+	i += 6;
     switch (method) {
         case '1': lineLib(...(coord1+' '+coord2).split(' ').map(e => parseFloat(e))); break;
         case '2': lineDDA(...(coord1+' '+coord2).split(' ').map(e => parseFloat(e))); break;
@@ -199,7 +203,6 @@ function drawLine(coord1, coord2) {
 
 function drawTestLines(l, dfi) {
     if (!checkInput(/\d+/, l) || !checkInput(/\d+/, dfi)) {return;}
-
     for (let i = 0; i < 360; i = i + parseInt(dfi)) {
         drawLine('0 0', Math.round(l * Math.cos(i / 180 * Math.PI)) + ' ' + Math.round(l * Math.sin(i / 180 * Math.PI)));
     }
@@ -220,11 +223,50 @@ function setup() {
 
 function draw() {
     noStroke();
-    fill(0, 0, 0);
+	clr = document.getElementById('name1').value;
+    hexDec(clr);
     rect(0, 0, width, height);
     noFill();
+    m.length = 0;
+    i = 0;
 }
 
+function setColorcanvas(l, dfi, coord1, coord2) {
+	clr = document.getElementById('name1').value;
+    hexDec(clr);
+    rect(0, 0, width, height);
+
+    for (let j = 0; j < i; j += 6)
+    	drawreturn(parseFloat(m[j]), parseFloat(m[j + 1]), parseFloat(m[j + 2]), parseFloat(m[j + 3]), m[j + 4], m[j + 5]);
+}
+
+function drawreturn(x1, y1, x2, y2, method, clr){
+    stroke(...clr);
+    if (x1 === x2 && y1 === y2)
+    {point(...(x1, y1)); return;}
+  
+    if (method === "1")
+    	lineLib(x1, y1, x2, y2);
+    if (method === "2")
+    	lineDDA(x1, y1, x2, y2);
+    if (method === "3")
+    	lineBrF(x1, y1, x2, y2);
+    if (method === "4")
+        lineBrI(x1, y1, x2, y2); 
+    if (method === "5") 
+    	lineBrS(x1, y1, x2, y2); 
+    if (method === "6") 
+    	lineWuS(x1, y1, x2, y2);
+}
+
+function hexDec(h){
+	var m = h.slice(1).match(/.{2}/g);
+	 
+	m[0] = parseInt(m[0], 16);
+	m[1] = parseInt(m[1], 16);
+	m[2] = parseInt(m[2], 16);
+	fill(m[0], m[1], m[2]);
+ };
 
 function resize() {
     canvas.style.width = container.clientWidth + "px";
