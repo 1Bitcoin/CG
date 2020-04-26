@@ -9,5 +9,4 @@
 6/7
 ![lab2](https://github.com/1Bitcoin/CG/blob/master/lab_02/2.jpg)
 
-
-  5) Алгоритм с флагом
+Пятая лаба: алгоритм с флагом
